@@ -110,10 +110,24 @@ const updateCartLocalStorage = (updatedCartItems) => {
         return [];
       }
     };
+    const [firstName, setFirstName] = useState("Guest");
+
+
+
 
     useEffect(() => {
+      const user = localStorage.getItem("user");
+      if (user) {
+        try {
+          const parsedUser = JSON.parse(user);
+          setFirstName(parsedUser?.firstName || "Guest");
+        } catch (err) {
+          console.error("Invalid user in localStorage", err);
+        }
+      }
       fetchProducts();
       setCartItems(getCartFromLocalStorage())
+
        // Fetch products when the component mounts
     }, []);
 
@@ -169,15 +183,8 @@ const updateCartLocalStorage = (updatedCartItems) => {
           <div>
            
            <h1 className="text-2xl font-bold">
-                      Welcome, {" "}
-                      {(() => {
-                        const user = localStorage.getItem("user");
-                        if (user) {
-                          const parsedUser = JSON.parse(user);
-                          return parsedUser?.firstName ?? "Guest"; // Provide a default value if `firstName` doesn't exist
-                        }
-                        return "Guest";
-                      })()}
+                      Welcome, {firstName}
+                     
                     </h1>{" "}
             <p className="text-muted-foreground">Browse fresh produce directly from local farmers</p>
           </div>
